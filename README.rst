@@ -1,7 +1,8 @@
 |License|
 
 
-# siibra neuroimaging toolbox
+siibra neuroimaging toolbox
+=============================
 
 Copyright 2020-2021, Forschungszentrum Jülich GmbH
 
