@@ -19,12 +19,12 @@ with open(os.path.join(ROOT_DIR,"README.md"), "r", encoding="utf-8") as f:
 setup(
     name=os.getenv("SIIBRA_TOOLBOX_NAME", "siibra_toolbox_template"),
     version=find_version(),
-    # author="Peter Smith",
-    # author_email="peter@example.come",
-    description="siibra-toolbox-template - A template for creating toolbox for siibra",
+    author="Big Data Analytics Group, Institute of Neuroscience and Medicint (INM-1), Forschungszentrum Julich",
+    author_email="inm1-bda@fz-juelich.de",
+    description="siibra-toolbox-neuroimaging - siibra toolbox for assignment of neuroimaging signals to brain regions",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    # url="https://github.com/FZJ-INM1-BDA/siibra-toolbox-template",
+    url="https://github.com/FZJ-INM1-BDA/siibra-toolbox-neuroimaging",
     packages=find_packages(include=[ os.getenv("SIIBRA_TOOLBOX_SRC", "siibra_toolbox_template")]),
     # packages=find_packages(include=['.']),
     classifiers=[
@@ -34,6 +34,6 @@ setup(
         'Intended Audience :: Developers',
     ],
     python_requires='>=3.6',
-    install_requires=['siibra>=0.3a17']
+    install_requires=['siibra>=0.3a17', 'fpdf']
 )
 
