@@ -1,0 +1,12 @@
+.ipynb_checkpoints
+__pycache__
+*.egg-info
+*.swp
+*.swo
+build
+dist
+examples/*.json
+upload_to_pypi.sh
+venv
+.vscode
+venv
