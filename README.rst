@@ -10,7 +10,7 @@ Copyright 2020-2021, Forschungszentrum Jülich GmbH
 Medicine (INM-1), Forschungszentrum Jülich GmbH*
 
 
-This repository provides a toolbox for [siibra](https://siibra-python.readthedocs.io) which provides functionalities to assign neuroimaging signals to brain regions. It is inspired by similar functionalities of the popular [SPM anatomy toolbox](https://github.com/inm7/jubrain-anatomy-toolbox).
+This repository provides a toolbox for `siibra <https://siibra-python.readthedocs.io>`__ which provides functionalities to assign neuroimaging signals to brain regions. It is inspired by similar functionalities of the popular `SPM anatomy toolbox <https://github.com/inm7/jubrain-anatomy-toolbox>`__ .
 
     **Note:** *``siibra-toolbox-neuroimaging`` is still in development. While care is taken that it works reliably, its API is not yet stable and you may still encounter bugs when using it.*
 
