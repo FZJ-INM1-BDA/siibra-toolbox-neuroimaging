@@ -10,7 +10,7 @@ Copyright 2020-2021, Forschungszentrum Jülich GmbH
 Medicine (INM-1), Forschungszentrum Jülich GmbH*
 
 
-This repository provides a toolbox for `siibra <https://siibra-python.readthedocs.io>`__ which provides functionalities to assign neuroimaging signals to brain regions. It is inspired by similar functionalities of the popular `SPM anatomy toolbox <https://github.com/inm7/jubrain-anatomy-toolbox>`__ .
+This repository provides a toolbox for `siibra <https://siibra-python.readthedocs.io>`__ which provides functionalities to assign whole brain signals provided in a NIfTI file to brain regions. The result is a report about brain regions that overlap with strong signals and their properties. The functionality is strongly inspired by similar functionalities of the popular `SPM anatomy toolbox <https://github.com/inm7/jubrain-anatomy-toolbox>`__ [EickhoffEtAl2005]_.
 
     **Note:** *``siibra-toolbox-neuroimaging`` is still in development. While care is taken that it works reliably, its API is not yet stable and you may still encounter bugs when using it.*
 
@@ -23,6 +23,11 @@ right code snippets that get you started. Furthermore, a set of jupyter
 notebooks demonstrating concrete example usecases are maintained in the
 `siibra-tutorials <https://github.com/FZJ-INM1-BDA/siibra-tutorials>`__
 repository.
+
+References
+----------
+
+.. [EickhoffEtAl2005] Eickhoff S, Stephan KE, Mohlberg H, Grefkes C, Fink GR, Amunts K, Zilles K: A new SPM toolbox for combining probabilistic cytoarchitectonic maps and functional imaging data. NeuroImage 25(4), 1325-1335, 2005
 
 
 Acknowledgements
