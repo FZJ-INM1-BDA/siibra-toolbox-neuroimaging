@@ -10,12 +10,12 @@ Copyright 2020-2021, Forschungszentrum Jülich GmbH
 Medicine (INM-1), Forschungszentrum Jülich GmbH*
 
 
-This repository provides a toolbox for `siibra <https://siibra-python.readthedocs.io>`__ which provides functionalities to assign whole brain signals provided in a NIfTI file to brain regions. The result is a report about brain regions that overlap with strong signals and their properties. The functionality is strongly inspired by similar functionalities of the popular `SPM anatomy toolbox <https://github.com/inm7/jubrain-anatomy-toolbox>`__ [EickhoffEtAl2005]_.
+This repository provides a toolbox for `siibra <https://siibra-python.readthedocs.io>`__ which provides functionalities to assign whole brain activation maps, as obtained from functional neuroimaging, to brain regions. Given an input volume in the form of a NIfTI file, the toolbox will segregate the input signal into connectec components, and then analyze overlap and correlation of each component with regions defined in an atlas. Per default, the Julich-Brain probabilistic cytoarchitectonic maps defined in MNI152 space are used, and the input volume is assumed in the same physical space. The result is a formatted report about brain regions that overlap with strong signals and their properties. The functionality is strongly inspired by similar functionalities of the popular `SPM anatomy toolbox <https://github.com/inm7/jubrain-anatomy-toolbox>`__ [EickhoffEtAl2005]_.
 
-    **Note:** *``siibra-toolbox-neuroimaging`` is still in development. While care is taken that it works reliably, its API is not yet stable and you may still encounter bugs when using it.*
+    **Note:** *``siibra-toolbox-neuroimaging`` is still in early development. Get in touch with us to discuss, and feel free to post issues here on github.*
 
 
-``siibra-python``\ ’s documentation is hosted at https://siibra-python.readthedocs.io. It includes a catalogue of well
+The toolbox relies on the functionalities of ``siibra-python``, documented at https://siibra-python.readthedocs.io. It includes a catalogue of well
 documented code examples that walk you through the different concepts
 and functionalities. As a new user, it is recommended to go through
 these examples - they are easy and will quickly provide you with the
