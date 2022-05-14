@@ -1,3 +1,3 @@
-__version__ = "0.1a1"
+__version__ = "0.2a0"
 
 from .assignment import AnatomicalAssignment
