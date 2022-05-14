@@ -25,6 +25,10 @@ From this, the library can generate a nicely formatted pdf report which also add
 
 The same report can also be produced using the commandline interface, by the simple call ``siibra assign nifti <filename>.nii.gz``
 
+This repository contains an example notebook, which you can run in your browser:
+.. image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/FZJ-INM1-BDA/siibra-toolbox-neuroimaging/HEAD?labpath=example.ipynb
+
 Future versions will provide an interactive plugin to `siibra-explorer <https://github.com/FZJ-INM1-BDA/siibra-explorer>`__, the interactive web browser hosted at <https://atlases.ebrains.eu/viewer/go/human>. 
 
 In the current implementation, the toolbox provides a Python library as well as an extension to the `siibra-cli <https://github.com/FZJ-INM1-BDA/siibra-cli>`__ commandline client. We release installation packages on pypi, so you typically can just run ``pip install siibra-toolbox-neuroimaging`` to install the Python package and commandline extension. 
