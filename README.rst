@@ -10,9 +10,24 @@ Copyright 2020-2021, Forschungszentrum Jülich GmbH
 Medicine (INM-1), Forschungszentrum Jülich GmbH*
 
 
-This repository provides a toolbox for `siibra <https://siibra-python.readthedocs.io>`__ which provides functionalities to assign whole brain activation maps, as obtained from functional neuroimaging, to brain regions. Given an input volume in the form of a NIfTI file, the toolbox will segregate the input signal into connectec components, and then analyze overlap and correlation of each component with regions defined in an atlas. Per default, the Julich-Brain probabilistic cytoarchitectonic maps defined in MNI152 space are used, and the input volume is assumed in the same physical space. The functionality is strongly inspired by similar functionalities of the popular `SPM anatomy toolbox <https://github.com/inm7/jubrain-anatomy-toolbox>`__ [EickhoffEtAl2005]_.
+This repository provides a toolbox for `siibra <https://siibra-python.readthedocs.io>`__ which provides functionalities to assign (typically thresholded) whole brain activation maps, as obtained from functional neuroimaging, to brain regions. Given an input volume in the form of a NIfTI file, the toolbox will segregate the input signal into connectec components, and then analyze overlap and correlation of each component with regions defined in an atlas. Per default, the Julich-Brain probabilistic cytoarchitectonic maps defined in MNI152 space are used, and the input volume is assumed in the same physical space. The functionality is strongly inspired by similar functionalities of the popular `SPM anatomy toolbox <https://github.com/inm7/jubrain-anatomy-toolbox>`__ [EickhoffEtAl2005]_.
 
-The result is a formatted report about brain regions that overlap with strong signals and their properties. Future versions will provide an interactive plugin to `siibra-explorer <https://github.com/FZJ-INM1-BDA/siibra-explorer>`__, the interactive web browser hosted at <https://atlases.ebrains.eu/viewer/go/human>. 
+A typical workflow will look like this:
+
+```python
+from siibra_toolbox_neuroimaging import AnatomicalAssignment
+my_input_file = "<filename>.nii.gz"
+analysis = AnatomicalAssignment()
+assignments, component_mask = analysis.run(my_input_file)
+analysis.create_report(assignments, my_input_file, component_mask)
+```
+
+The main result is a table listing for each detected component significantly overlapping brain regions and their properties, returned as a pandas DataFrame (``assignments`` in the above example). 
+From this, the library can generate a nicely formatted pdf report which also adds structural connectivity profiles for the regions. 
+
+The same report can also be produced using the commandline interface, by the simple call ``siibra assign nifti <filename>.nii.gz``
+
+Future versions will provide an interactive plugin to `siibra-explorer <https://github.com/FZJ-INM1-BDA/siibra-explorer>`__, the interactive web browser hosted at <https://atlases.ebrains.eu/viewer/go/human>. 
 
 In the current implementation, the toolbox provides a Python library as well as an extension to the `siibra-cli <https://github.com/FZJ-INM1-BDA/siibra-cli>`__ commandline client. We release installation packages on pypi, so you typically can just run ``pip install siibra-toolbox-neuroimaging`` to install the Python package and commandline extension. 
 
