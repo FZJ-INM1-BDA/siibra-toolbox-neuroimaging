@@ -17,20 +17,19 @@ from siibra import QUIET, __version__, logger
 from siibra.core import Atlas, Parcellation, Space
 from siibra.features import get_features, modalities
 
+import os
+from hashlib import md5
 import matplotlib.pyplot as plt
 import nibabel as nib
-import os
 from nilearn import plotting, image
 from fpdf import FPDF
-import matplotlib
 import numpy as np
 import pandas as pd
 from datetime import datetime
 from tqdm import tqdm
-
 from typing import Union
 
-matplotlib.use("Agg")
+import matplotlib
 
 
 class AnatomicalAssignment:
@@ -66,57 +65,69 @@ class AnatomicalAssignment:
             0
         ]
 
-    def run(self, niftifile, outdir=None):
+    def analyze(self, niftifile: Union[str, nib.Nifti1Image]):
+        """ Run the anatomical assignment for the given image.
+
+        """
+
+        if isinstance(niftifile, str):
+            image =  nib.load(niftifile),
+            filename = niftifile
+        else:
+            image = niftifile
+            filename = None
+
+        # get initial assignments and detected components
+        initial_assignments, component_mask = self.pmaps.assign(image)
+        initial_assignments.sort_values(by="Correlation", ascending=False, inplace=True)
+        assignments = self._select_assignments(
+            initial_assignments, component_mask, image
+        )
+
+        return assignments, component_mask
+
+    def create_report(self, assignments:pd.DataFrame, image: Union[str, nib.Nifti1Image], component_mask: nib.Nifti1Image, outdir:str=None):
 
         if outdir is None:
             from tempfile import mkdtemp
-
             outdir = mkdtemp()
+        logger.info(f"Creating pdf report in output directory: {outdir}")
 
+        # output directory for intermediate plots
         plotdir = os.path.join(outdir, "plots")
         if not os.path.isdir(plotdir):
             os.makedirs(plotdir)
 
-        reportfile = f"{os.path.join(outdir,os.path.basename(niftifile))}.pdf"
+        # pdf report
+        reportfile = os.path.join(outdir,'report.pdf')
         if os.path.isfile(reportfile) and not self.overwrite:
-            logger.warn(
-                f"File {reportfile} exists - skipping analysis for {niftifile}."
-            )
+            logger.warn(f"File {reportfile} exists - skipping analysis.")
             return reportfile
 
-        logger.info(
-            f"Analyzing {niftifile}. Results will be stored in folder {outdir}."
-        )
-        img = nib.load(niftifile)
-        input_plot = self._plot_input(img, niftifile, plotdir)
+        backend = matplotlib.get_backend()
+        matplotlib.use("Agg")
 
-        # get initial assignments and detected components
-        initial_assignments, compimg = self.pmaps.assign(img)
-        initial_assignments.sort_values(by="Correlation", ascending=False, inplace=True)
+        # create plot of the input image
+        input_plot = self._plot_input(image, os.path.join(plotdir,'input.png'))
 
-        assignments = self._select_assignments(initial_assignments, compimg, img)
-
-        # plot the complete component image
+        # create plot of the component mask image
         plt.ion()
         fig, ax = plt.subplots(1, 1, figsize=(6, 3), dpi=self.dpi)
-        plotting.plot_glass_brain(compimg, axes=ax, alpha=0.3, cmap="Set1")
-        # fig.tight_layout(pad=0.0)
+        plotting.plot_glass_brain(component_mask, axes=ax, alpha=0.3, cmap="Set1")
         plt.ioff()
-        components_plot = (
-            f"{os.path.join(plotdir, os.path.basename(niftifile))}.components.png"
-        )
+        components_plot = os.path.join(plotdir, 'components.png')
         fig.savefig(components_plot, dpi=self.dpi)
 
-        # plot masks of individual components
+        # create plots of each individual component
         component_plots = {}
-        arr = np.asanyarray(compimg.dataobj)
+        comparr = np.asanyarray(component_mask.dataobj)
         for component in tqdm(
             assignments.component.unique(),
             desc="Plotting component masks...",
             unit="components",
         ):
             component_plots[component] = self._plot_component(
-                arr, component, compimg.affine, niftifile, plotdir
+                comparr, component, component_mask.affine, plotdir
             )
 
         # plot relevant probability maps
@@ -135,9 +146,7 @@ class AnatomicalAssignment:
             desc="Plotting connectivity profiles...",
             unit="profiles",
         ):
-            profile_plots[regionname] = self._plot_profile(
-                self.conn, regionname, plotdir
-            )
+            profile_plots[regionname] = self._plot_profile(regionname, plotdir)
         not_found = [k for k, v in profile_plots.items() if v is None]
         if not_found:
             logger.warning(
@@ -148,7 +157,6 @@ class AnatomicalAssignment:
         # build the actual pdf report
         self._build_pdf(
             assignments,
-            niftifile,
             input_plot,
             components_plot,
             component_plots,
@@ -156,6 +164,8 @@ class AnatomicalAssignment:
             profile_plots,
             reportfile,
         )
+
+        matplotlib.use(backend)
         return reportfile
 
     def _select_assignments(self, initial_assignments, compimg, img):
@@ -196,61 +206,58 @@ class AnatomicalAssignment:
                 )
         return pd.DataFrame(results)
 
-    def _plot_input(self, img, niftifile, outdir):
+    def _plot_input(self, img:Union[str, nib.Nifti1Image], filename:str):
         """plot  image to file"""
-        filename = f"{os.path.join(outdir, os.path.basename(niftifile))}.png"
+        if isinstance(img, str):
+            img = nib.load(img)
         if not os.path.isfile(filename) or self.overwrite:
             plt.ion()
             fig, ax = plt.subplots(1, 1, figsize=(6, 3), dpi=self.dpi)
             plotting.plot_glass_brain(img, axes=ax, alpha=0.3)
-            fig.tight_layout(pad=0.0)
             plt.ioff()
             fig.savefig(filename, dpi=self.dpi)
         return filename
 
-    def _plot_component(self, arr, component, affine, niftifile, outdir):
+    def _plot_component(self, arr:np.ndarray, component:int, affine:np.ndarray, plotdir:str):
         """Plot component to file"""
-        filename = (
-            f"{os.path.join(outdir, os.path.basename(niftifile))}.{str(component)}.png"
-        )
+        filename = os.path.join(plotdir, f"{component:3}.png")
         if not os.path.isfile(filename) or self.overwrite:
             mask = nib.Nifti1Image((arr == component).astype("uint8"), affine)
             fig, ax = plt.subplots(1, 1, figsize=(6, 3), dpi=self.dpi)
             plt.ion()
             plotting.plot_glass_brain(mask, axes=ax, colorbar=False, alpha=0.3)
-            # fig.tight_layout(pad=0.0)
             plt.ioff()
             fig.savefig(filename, dpi=self.dpi)
         return filename
 
-    def _plot_pmap(self, regionname, outdir):
-        with QUIET:
-            region = self.pmaps.decode_region(regionname)
-            pindices = self.pmaps.get_index(regionname)
-        assert len(pindices) == 1
-        filename = f"{os.path.join(outdir, region.key)}_pmap.png"
+    def _plot_pmap(self, regionname:str, plotdir:str):
+        region = self.pmaps.decode_region(regionname)
+        filename = os.path.join(plotdir, f"{region.key}_pmap.png")
         if not os.path.isfile(filename) or self.overwrite:
-            pmap = self.pmaps.fetch(pindices[0].map)
+            with QUIET:
+                pindices = self.pmaps.get_index(regionname)
+            assert len(pindices) == 1
             fig, ax = plt.subplots(1, 1, figsize=(6, 3), dpi=self.dpi)
             plt.ion()
             plotting.plot_glass_brain(
-                pmap, axes=ax, colorbar=False, alpha=0.3, cmap="magma"
+                self.pmaps.fetch(pindices[0].map),
+                axes=ax, colorbar=False, alpha=0.3, cmap="magma"
             )
-            # fig.tight_layout(pad=0.0)
             plt.ioff()
             fig.savefig(filename, dpi=self.dpi)
         return filename
 
-    def _plot_profile(self, conn, regionname, outdir):
+    def _plot_profile(self, regionname, plotdir):
         with QUIET:
             region = self.pmaps.decode_region(regionname)
-        if region not in conn.matrix:
+        if region not in self.conn.matrix:
             return None
-        filename = f"{os.path.join(outdir, region.key)}_profile.png"
+        profile = self.conn.matrix[region].sort_values(ascending=False)[: self.max_conn]
+        filename = os.path.join(plotdir, f"{region.key}_profile.png")
         if not os.path.isfile(filename) or self.overwrite:
             fig, ax = plt.subplots(1, 1, figsize=(6, 3), dpi=self.dpi)
             plt.ion()
-            profile = conn.matrix[region].sort_values(ascending=False)[: self.max_conn]
+            profile = self.conn.matrix[region].sort_values(ascending=False)[: self.max_conn]
             profile.plot.bar(grid=True, ax=ax).set_xticklabels(
                 [str(_)[:40] for _ in profile.index]
             )
@@ -264,7 +271,6 @@ class AnatomicalAssignment:
     def _build_pdf(
         self,
         assignments,
-        niftifile,
         input_plot,
         components_plot,
         component_plots,
@@ -295,7 +301,6 @@ class AnatomicalAssignment:
             "\n".join(
                 [
                     f"Parcellation: {self.pmaps.parcellation.name}",
-                    f"Input file: {niftifile}",
                     f"Found {len(assignments.component.unique())} components",
                     " ",
                     f"For each component, regions with a correlation >{self.min_correlation} are assigned, but at least {self.min_entries}.",
@@ -326,7 +331,7 @@ class AnatomicalAssignment:
 
             selection = assignments[lambda d: d.component == component]
 
-            for i, (index, row) in tqdm(
+            for i, (_, row) in tqdm(
                 enumerate(selection.iterrows()),
                 total=len(selection),
                 desc=f"- Page #{component}",

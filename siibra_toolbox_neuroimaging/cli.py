@@ -22,14 +22,11 @@ import click
 @click.argument("niftifiles", type=click.STRING, nargs=-1)
 @click.option( "-s", "--space", type=click.STRING, default='mni152')
 @click.option( "-p", "--parcellation", type=click.STRING, default="julich 2.9")
-@click.option(
-    "--labelled/--probabilistic", is_flag=True, default=True,
-    help="Wether to use labelled maps or continuous (e.g. probabilistic) maps to perform the assignment (default:labelled)",
-)
 @click.option( "-o", "--outdir", type=click.STRING, default=None)
-def nifti(niftifiles, space, parcellation, labelled, outdir):
+def nifti(niftifiles, space, parcellation, outdir):
     """Assign whole brain signals in NIfTI images to brain regions from a parcellation"""
     from siibra_toolbox_neuroimaging import AnatomicalAssignment
     analysis = AnatomicalAssignment(parcellation, space)
     for niftifile in niftifiles:
-        analysis.run(niftifile, outdir=outdir)
+        assignments, component_mask = analysis.analyze(niftifile)
+        analysis.create_report(assignments, niftifile, component_mask, outdir)
