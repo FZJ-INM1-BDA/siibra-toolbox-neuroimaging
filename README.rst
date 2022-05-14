@@ -14,13 +14,14 @@ This repository provides a toolbox for `siibra <https://siibra-python.readthedoc
 
 A typical workflow will look like this:
 
-```python
-from siibra_toolbox_neuroimaging import AnatomicalAssignment
-my_input_file = "<filename>.nii.gz"
-analysis = AnatomicalAssignment()
-assignments, component_mask = analysis.run(my_input_file)
-analysis.create_report(assignments, my_input_file, component_mask)
-```
+.. code-block:: python
+   :caption: Simple example workflow.
+   
+   from siibra_toolbox_neuroimaging import AnatomicalAssignment
+   my_input_file = "<filename>.nii.gz"
+   analysis = AnatomicalAssignment()
+   assignments, component_mask = analysis.run(my_input_file)
+   analysis.create_report(assignments, my_input_file, component_mask)
 
 The main result is a table listing for each detected component significantly overlapping brain regions and their properties, returned as a pandas DataFrame (``assignments`` in the above example). 
 From this, the library can generate a nicely formatted pdf report which also adds structural connectivity profiles for the regions. 
