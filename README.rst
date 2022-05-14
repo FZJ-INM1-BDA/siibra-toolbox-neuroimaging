@@ -12,11 +12,8 @@ Medicine (INM-1), Forschungszentrum Jülich GmbH*
 
 This repository provides a toolbox for `siibra <https://siibra-python.readthedocs.io>`__ which provides functionalities to assign (typically thresholded) whole brain activation maps, as obtained from functional neuroimaging, to brain regions. Given an input volume in the form of a NIfTI file, the toolbox will segregate the input signal into connectec components, and then analyze overlap and correlation of each component with regions defined in an atlas. Per default, the Julich-Brain probabilistic cytoarchitectonic maps defined in MNI152 space are used, and the input volume is assumed in the same physical space. The functionality is strongly inspired by similar functionalities of the popular `SPM anatomy toolbox <https://github.com/inm7/jubrain-anatomy-toolbox>`__ [EickhoffEtAl2005]_.
 
-A typical workflow will look like this:
+A typical workflow will look like this::
 
-.. code-block:: python
-   :caption: Simple example workflow.
-   
    from siibra_toolbox_neuroimaging import AnatomicalAssignment
    my_input_file = "<filename>.nii.gz"
    analysis = AnatomicalAssignment()
