@@ -5,6 +5,6 @@ terminate(){
     exit
 }
 
-cd http_wrapper && celery -A scheduling.worker worker -l INFO &
-cd http_wrapper && uvicorn server:app --port 6006 &
+celery -A http_wrapper.scheduling.worker worker -l INFO &
+uvicorn http_wrapper.server:app --port 6001 &
 wait

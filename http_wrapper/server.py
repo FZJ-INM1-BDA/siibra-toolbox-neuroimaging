@@ -1,5 +1,5 @@
-from routes.analysis import router as analysis_router
-from logger import access_logger
+from http_wrapper.routes.analysis import router as analysis_router
+from http_wrapper.logger import access_logger
 
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
