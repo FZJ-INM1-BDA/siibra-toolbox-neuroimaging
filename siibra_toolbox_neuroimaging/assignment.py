@@ -61,9 +61,9 @@ class AnatomicalAssignment:
         )
 
         # TODO do not just fetch the first connectivity source - choose one explicitly
-        self.conn = get_features(self.pmaps.parcellation, modalities.StreamlineCounts)[
-            0
-        ]
+        # self.conn = get_features(self.pmaps.parcellation, modalities.StreamlineCounts)[
+        #     0
+        # ]
 
     def analyze(self, niftifile: Union[str, nib.Nifti1Image]):
         """ Run the anatomical assignment for the given image.
@@ -71,7 +71,7 @@ class AnatomicalAssignment:
         """
 
         if isinstance(niftifile, str):
-            image =  nib.load(niftifile),
+            image =  nib.load(niftifile)
             filename = niftifile
         else:
             image = niftifile
@@ -138,22 +138,20 @@ class AnatomicalAssignment:
             unit="maps",
         ):
             pmap_plots[regionname] = self._plot_pmap(regionname, plotdir)
-
         # plot relevant connectivity profiles
-        profile_plots = {}
-        for regionname in tqdm(
-            assignments.region.unique(),
-            desc="Plotting connectivity profiles...",
-            unit="profiles",
-        ):
-            profile_plots[regionname] = self._plot_profile(regionname, plotdir)
-        not_found = [k for k, v in profile_plots.items() if v is None]
-        if not_found:
-            logger.warning(
-                "No profiles found in connectivity matrix for regions "
-                f"{', '.join(not_found)}"
-            )
-
+        # profile_plots = {}
+        # for regionname in tqdm(
+        #     assignments.region.unique(),
+        #     desc="Plotting connectivity profiles...",
+        #     unit="profiles",
+        # ):
+        #     profile_plots[regionname] = self._plot_profile(regionname, plotdir)
+        # not_found = [k for k, v in profile_plots.items() if v is None]
+        # if not_found:
+        #     logger.warning(
+        #         "No profiles found in connectivity matrix for regions "
+        #         f"{', '.join(not_found)}"
+        #     )
         # build the actual pdf report
         self._build_pdf(
             assignments,
@@ -161,7 +159,7 @@ class AnatomicalAssignment:
             components_plot,
             component_plots,
             pmap_plots,
-            profile_plots,
+            None,
             reportfile,
         )
 
@@ -341,7 +339,7 @@ class AnatomicalAssignment:
                 pdf.set_xy(left, 14 + text_height + (i + 1) * cell_height)
                 pdf.image(pmap_plots[row.region], h=plot_height)
 
-                if profile_plots[row.region] is not None:
+                if profile_plots is not None and profile_plots[row.region] is not None:
                     pdf.set_xy(100, 14 + (i + 1) * cell_height)
                     pdf.image(profile_plots[row.region], h=cell_height)
 
