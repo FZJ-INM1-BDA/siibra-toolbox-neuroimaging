@@ -34,6 +34,7 @@ jobs:
         echo "Building $DOCKER_BUILT_TAG"
         docker build \
           -t $DOCKER_BUILT_TAG \
+          -f ${{ matrix.dockerfile }} \
           .
         echo "Successfully built $DOCKER_BUILT_TAG"
         echo "DOCKER_BUILT_TAG=$DOCKER_BUILT_TAG" >> $GITHUB_ENV
