@@ -15,8 +15,8 @@ RUN mkdir /requirements
 COPY ./http_wrapper/requirements-server.txt /requirements/
 RUN pip install -r /requirements/requirements-server.txt
 
-COPY . /http_wrapper
-WORKDIR /http_wrapper
+COPY . /siibra_toolbox
+WORKDIR /siibra_toolbox
 
 # COPY --from=builder /siibra_jugex_viewerplugin/public /siibra_jugex_http/public
 # ENV SIIBRA_JUGEX_STATIC_DIR=/siibra_jugex_http/public
