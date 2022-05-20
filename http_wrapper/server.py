@@ -33,6 +33,10 @@ async def access_log(request: Request, call_next):
 def hello():
     return 'world'
 
+@app.get('/ready', include_in_schema=False)
+def hello():
+    return 'OK'
+
 app.include_router(analysis_router, prefix="/analysis")
 
 path_to_viewer_plugin = path.join(
