@@ -1,6 +1,6 @@
 import os
 
-working_dir = os.getenv("SIIBRA_TOOLBOX_NIT_WORKING_DIR", "./workingdir")
+working_dir = os.getenv("SIIBRA_TOOLBOX_DATA_DIR", "./workingdir")
 
 def _get_task_workdir(task_id:str):
     path_to_dir = os.path.abspath(os.path.join(working_dir, task_id))

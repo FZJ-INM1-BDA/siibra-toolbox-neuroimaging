@@ -14,7 +14,7 @@ services:
       context: .
       dockerfile: ./http.server.dockerfile
     environment:
-      SIIBRA_TOOLBOX_NIT_WORKING_DIR: /tmp
+      SIIBRA_TOOLBOX_DATA_DIR: /tmp
       SIIBRA_TOOLBOX_CELERY_BROKER: redis://redis:6379
       SIIBRA_TOOLBOX_CELERY_RESULT: redis://redis:6379
     ports:
@@ -29,7 +29,7 @@ services:
       context: .
       dockerfile: ./http.worker.dockerfile
     environment:
-      SIIBRA_TOOLBOX_NIT_WORKING_DIR: /tmp
+      SIIBRA_TOOLBOX_DATA_DIR: /tmp
       SIIBRA_TOOLBOX_CELERY_BROKER: redis://redis:6379
       SIIBRA_TOOLBOX_CELERY_RESULT: redis://redis:6379
     volumes:
