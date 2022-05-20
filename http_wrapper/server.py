@@ -10,6 +10,10 @@ import time
 
 app = FastAPI()
 
+@app.get('/ready', include_in_schema=False)
+def health():
+    return 'OK'
+
 # Allow CORS
 origins = ['*']
 app.add_middleware(
@@ -32,10 +36,6 @@ async def access_log(request: Request, call_next):
 @app.get('/', include_in_schema=False)
 def hello():
     return 'world'
-
-@app.get('/ready', include_in_schema=False)
-def hello():
-    return 'OK'
 
 app.include_router(analysis_router, prefix="/analysis")
 
