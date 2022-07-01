@@ -3,7 +3,7 @@ name: '[docker image]'
 on:
   push:
     branches:
-    - feat_http
+    - master
 
 jobs:
   build-docker-img:
