@@ -1,0 +1,8 @@
+celery[redis]==5.2.6
+
+siibra>=0.3a17
+siibra-cli>=0.2a0
+matplotlib>=3.3
+fpdf
+
+# install this repository

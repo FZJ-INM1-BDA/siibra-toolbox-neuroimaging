@@ -1,5 +1,5 @@
-from routes.analysis import router as analysis_router
-from logger import access_logger
+from http_wrapper.routes.analysis import router as analysis_router
+from http_wrapper.logger import access_logger
 
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
@@ -9,6 +9,10 @@ import time
 
 
 app = FastAPI()
+
+@app.get('/ready', include_in_schema=False)
+def health():
+    return 'OK'
 
 # Allow CORS
 origins = ['*']

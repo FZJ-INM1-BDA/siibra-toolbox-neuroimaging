@@ -11,13 +11,16 @@
 FROM python:3.10-alpine
 RUN pip install -U pip
 
-COPY ./http_wrapper /http_wrapper
-WORKDIR /http_wrapper
+RUN mkdir /requirements
+COPY ./http_wrapper/requirements-server.txt /requirements/
+RUN pip install -r /requirements/requirements-server.txt
 
-RUN pip install -r ./requirements-server.txt
+COPY . /siibra_toolbox
+WORKDIR /siibra_toolbox
+
 # COPY --from=builder /siibra_jugex_viewerplugin/public /siibra_jugex_http/public
 # ENV SIIBRA_JUGEX_STATIC_DIR=/siibra_jugex_http/public
 
 USER nobody
 EXPOSE 6001
-ENTRYPOINT uvicorn server:app --port 6001 --host 0.0.0.0
+ENTRYPOINT uvicorn http_wrapper.server:app --port 6001 --host 0.0.0.0

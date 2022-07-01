@@ -1,27 +1,36 @@
 version: '3'
 
+volumes:
+  working_dir:
+
 services:
   redis:
     image: redis:6-alpine
   web:
     depends_on:
       - redis
-    image: siibra-toolbox-template-server:local-dev
+    image: docker-registry.ebrains.eu/siibra-toolbox/neuroimaging-server:local-dev
     build:
       context: .
       dockerfile: ./http.server.dockerfile
     environment:
+      SIIBRA_TOOLBOX_DATA_DIR: /tmp
       SIIBRA_TOOLBOX_CELERY_BROKER: redis://redis:6379
       SIIBRA_TOOLBOX_CELERY_RESULT: redis://redis:6379
     ports:
       - "6001:6001"
+    volumes:
+      - working_dir:/tmp
   worker:
     depends_on:
       - redis
-    image: siibra-toolbox-template-worker:local-dev
+    image: docker-registry.ebrains.eu/siibra-toolbox/neuroimaging-worker:local-dev
     build:
       context: .
       dockerfile: ./http.worker.dockerfile
     environment:
+      SIIBRA_TOOLBOX_DATA_DIR: /tmp
       SIIBRA_TOOLBOX_CELERY_BROKER: redis://redis:6379
       SIIBRA_TOOLBOX_CELERY_RESULT: redis://redis:6379
+    volumes:
+      - working_dir:/tmp
