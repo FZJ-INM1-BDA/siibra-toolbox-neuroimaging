@@ -159,7 +159,7 @@ class AnatomicalAssignment:
             components_plot,
             component_plots,
             pmap_plots,
-            None,
+            profile_plots,
             reportfile,
         )
 
