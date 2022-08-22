@@ -139,19 +139,19 @@ class AnatomicalAssignment:
         ):
             pmap_plots[regionname] = self._plot_pmap(regionname, plotdir)
         # plot relevant connectivity profiles
-        # profile_plots = {}
-        # for regionname in tqdm(
-        #     assignments.region.unique(),
-        #     desc="Plotting connectivity profiles...",
-        #     unit="profiles",
-        # ):
-        #     profile_plots[regionname] = self._plot_profile(regionname, plotdir)
-        # not_found = [k for k, v in profile_plots.items() if v is None]
-        # if not_found:
-        #     logger.warning(
-        #         "No profiles found in connectivity matrix for regions "
-        #         f"{', '.join(not_found)}"
-        #     )
+        profile_plots = {}
+        for regionname in tqdm(
+            assignments.region.unique(),
+            desc="Plotting connectivity profiles...",
+            unit="profiles",
+        ):
+            profile_plots[regionname] = self._plot_profile(regionname, plotdir)
+        not_found = [k for k, v in profile_plots.items() if v is None]
+        if not_found:
+            logger.warning(
+                "No profiles found in connectivity matrix for regions "
+                f"{', '.join(not_found)}"
+            )
         # build the actual pdf report
         self._build_pdf(
             assignments,
