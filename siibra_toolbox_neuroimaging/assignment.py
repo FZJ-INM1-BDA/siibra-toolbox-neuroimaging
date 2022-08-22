@@ -61,9 +61,9 @@ class AnatomicalAssignment:
         )
 
         # TODO do not just fetch the first connectivity source - choose one explicitly
-        # self.conn = get_features(self.pmaps.parcellation, modalities.StreamlineCounts)[
-        #     0
-        # ]
+        self.conn = get_features(self.pmaps.parcellation, modalities.StreamlineCounts)[
+            0
+        ]
 
     def analyze(self, niftifile: Union[str, nib.Nifti1Image]):
         """ Run the anatomical assignment for the given image.
